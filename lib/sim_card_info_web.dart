@@ -2,8 +2,6 @@
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html show window;
-
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'sim_card_info_platform_interface.dart';
@@ -17,10 +15,10 @@ class SimCardInfoWeb extends SimCardInfoPlatform {
     SimCardInfoPlatform.instance = SimCardInfoWeb();
   }
 
-  /// Returns a [String] containing the version of the platform.
-  @override
-  Future<String?> getSimInfo() async {
-    final version = html.window.navigator.userAgent;
-    return version;
-  }
+// /// Returns a [String] containing the Sim Info.
+// @override
+// Future<String?> getSimInfo() async {
+//   final version = html.window.navigator.userAgent;
+//   return "SimCardInfo for Web $version is not Supported";
+// }
 }

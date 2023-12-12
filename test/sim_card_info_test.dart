@@ -1,15 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sim_card_info/sim_card_info.dart';
-import 'package:sim_card_info/sim_card_info_platform_interface.dart';
-import 'package:sim_card_info/sim_card_info_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:sim_card_info/sim_card_info.dart';
+import 'package:sim_card_info/sim_card_info_method_channel.dart';
+import 'package:sim_card_info/sim_card_info_platform_interface.dart';
+import 'package:sim_card_info/sim_info.dart';
 
 class MockSimCardInfoPlatform
     with MockPlatformInterfaceMixin
     implements SimCardInfoPlatform {
 
   @override
-  Future<String?> getSimInfo() => Future.value('42');
+  Future<List<SimInfo>?> getSimInfo() => Future.value([]);
 }
 
 void main() {

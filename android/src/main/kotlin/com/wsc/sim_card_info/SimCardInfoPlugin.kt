@@ -55,11 +55,11 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     @SuppressLint("HardwareIds")
     private fun getSimInfo(): String {
         val simCardInfo = StringBuilder()
-        simCardInfo.append("Sim Card Info:\n\n")
+//        simCardInfo.append("Sim Card Info:\n\n")
         val telephonyManager =
             context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
         if (telephonyManager == null || ActivityCompat.checkSelfPermission(
-                context.applicationContext,
+                context,
                 Manifest.permission.READ_PHONE_STATE
             ) != PackageManager.PERMISSION_GRANTED
         ) {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sim_card_info/sim_card_info.dart';
+import 'package:sim_card_info/sim_info.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _simInfo = 'Unknown';
+  List<SimInfo>? _simInfo = [];
   final _simCardInfoPlugin = SimCardInfo();
 
   @override
@@ -27,14 +28,13 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initSimInfoState() async {
-    String simCardInfo;
+    List<SimInfo>? simCardInfo;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      simCardInfo =
-          await _simCardInfoPlugin.getSimInfo() ?? 'Cannot retrieve info';
+      simCardInfo = await _simCardInfoPlugin.getSimInfo() ?? [];
     } on PlatformException {
-      simCardInfo = 'Failed to get Sim Info.';
+      simCardInfo = [];
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -54,8 +54,28 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Sim Info'),
         ),
-        body: Center(
-          child: Text('$_simInfo\n'),
+        body: ListView.builder(
+          itemCount: _simInfo?.length ?? 0,
+          itemBuilder: (context, index) {
+            final simInfo = _simInfo![index];
+            return Card(
+              child: ListTile(
+                leading: Icon(Icons.sim_card),
+                title: Text('SIM ${index + 1}'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Carrier Name: ${simInfo.carrierName}'),
+                    Text('Display Name: ${simInfo.displayName}'),
+                    Text('Slot Index: ${simInfo.slotIndex}'),
+                    Text('Number: ${simInfo.number}'),
+                    Text('Country ISO: ${simInfo.countryIso}'),
+                    Text('Country Phone Prefix: ${simInfo.countryPhonePrefix}'),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

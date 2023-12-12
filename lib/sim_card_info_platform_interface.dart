@@ -1,4 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:sim_card_info/sim_info.dart';
 
 import 'sim_card_info_method_channel.dart';
 
@@ -23,7 +24,7 @@ abstract class SimCardInfoPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getSimInfo() {
+  Future<List<SimInfo>?> getSimInfo() {
     throw UnimplementedError('getSimInfo() has not been implemented.');
   }
 }

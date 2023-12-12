@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:sim_card_info/sim_info.dart';
 
 import 'sim_card_info_platform_interface.dart';
 
@@ -10,8 +13,17 @@ class MethodChannelSimCardInfo extends SimCardInfoPlatform {
   final methodChannel = const MethodChannel('sim_card_info');
 
   @override
-  Future<String?> getSimInfo() async {
+  Future<List<SimInfo>?> getSimInfo() async {
     final info = await methodChannel.invokeMethod<String>('getSimInfo');
-    return info;
+    List<SimInfo>? simInfoList;
+    if (info != null) {
+      simInfoList = [];
+      // convert json to list
+      final infoJson = json.decode(info);
+      infoJson.forEach((element) {
+        simInfoList?.add(SimInfo.fromJson(element));
+      });
+    }
+    return simInfoList;
   }
 }
