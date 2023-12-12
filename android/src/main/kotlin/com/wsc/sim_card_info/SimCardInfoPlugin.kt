@@ -3,14 +3,12 @@ package com.wsc.sim_card_info
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import androidx.core.app.ActivityCompat
-import io.flutter.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -20,7 +18,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener
-import org.json.JSONArray
+
 //import com.google.gson.Gson
 
 
@@ -31,7 +29,7 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
-    private lateinit var activity: Activity
+    private lateinit var context: Context
     private lateinit var channel: MethodChannel
     private var methodChannelName = "getSimInfo"
 
@@ -40,6 +38,7 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        context = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "sim_card_info")
         channel.setMethodCallHandler(this)
     }
@@ -55,24 +54,20 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
     @SuppressLint("HardwareIds")
     private fun getSimInfo(): String {
-        val simCardInfo = StringBuilder().append("Sim Card Info:\n\n")
-//    val simInfo  = SimInfo()
-//    return  simInfo.getSimCardInfo(this)
-        println("getSimInfo")
+        val simCardInfo = StringBuilder()
+        simCardInfo.append("Sim Card Info:\n\n")
         val telephonyManager =
-            activity.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
-        println("telephonyManager: $telephonyManager")
+            context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
         if (telephonyManager == null || ActivityCompat.checkSelfPermission(
-                activity,
+                context.applicationContext,
                 Manifest.permission.READ_PHONE_STATE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            return "null"
+            return ("Permission denied")
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            println("Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q")
-            val subscriptionManager = activity.getSystemService(SubscriptionManager::class.java)
+            val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
             subscriptionManager?.activeSubscriptionInfoList?.let { subscriptionInfoList ->
                 simCardInfo.append("[")
                 for (info in subscriptionInfoList) {
@@ -121,7 +116,7 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        activity = binding.activity
+        context = binding.activity
         binding.addRequestPermissionsResultListener(this)
     }
 
@@ -130,7 +125,7 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        activity = binding.activity
+        context = binding.activity
         binding.addRequestPermissionsResultListener(this)
     }
 
@@ -143,7 +138,6 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         permissions: Array<out String>,
         grantResults: IntArray
     ): Boolean {
-
         // If request is cancelled, the result arrays are empty.
         if (requestCode == 0) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
