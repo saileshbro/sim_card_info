@@ -53,6 +53,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        colorSchemeSeed: Colors.deepPurple,
+        useMaterial3: true,
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Sim Info'),
@@ -76,10 +80,23 @@ class _MyAppState extends State<MyApp> {
     return ListView.builder(
       itemCount: _simInfo?.length ?? 0,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(_simInfo?[index].carrierName ?? ''),
-          subtitle: Text(_simInfo?[index].countryIso ?? ''),
-          trailing: Text(_simInfo?[index].displayName ?? ''),
+        final simInfo = _simInfo![index];
+        return Card(
+          child: ListTile(
+            leading: const Icon(Icons.sim_card),
+            title: Text('SIM ${index + 1}'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Carrier Name: ${simInfo.carrierName}'),
+                Text('Display Name: ${simInfo.displayName}'),
+                Text('Slot Index: ${simInfo.slotIndex}'),
+                Text('Number: ${simInfo.number}'),
+                Text('Country ISO: ${simInfo.countryIso}'),
+                Text('Country Phone Prefix: ${simInfo.countryPhonePrefix}'),
+              ],
+            ),
+          ),
         );
       },
     );
