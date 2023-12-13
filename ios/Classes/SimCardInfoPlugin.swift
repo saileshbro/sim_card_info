@@ -10,8 +10,19 @@ public class SimCardInfoPlugin: NSObject, FlutterPlugin {
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
-    case "getPlatformVersion":
-      result("iOS " + UIDevice.current.systemVersion)
+    case "getSimInfo":
+      result(FlutterMethodNotImplemented)
+
+//       result("[{" +
+//             "\"carrierName\": \"carrierName\"," +
+//             "\"displayName\": \"displayName\"," +
+//             "\"slotIndex\": \"simSlotIndex\"," +
+//             "\"number\": \"number\"," +
+//             "\"countryIso\": \"countryIso\"," +
+//             "\"countryPhonePrefix\": \"countryIso\"" +
+//             "}]"
+//       )
+
     default:
       result(FlutterMethodNotImplemented)
     }

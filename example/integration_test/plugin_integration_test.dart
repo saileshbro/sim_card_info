@@ -17,9 +17,9 @@ void main() {
 
   testWidgets('getPlatformVersion test', (WidgetTester tester) async {
     final SimCardInfo plugin = SimCardInfo();
-    final List<SimInfo>? version = await plugin.getSimInfo();
+    final List<SimInfo>? infoList = await plugin.getSimInfo();
     // The version string depends on the host platform running the test, so
     // just assert that some non-empty string is returned.
-    expect(version?.isNotEmpty, true);
+    expect(infoList?.isNotEmpty, true);
   });
 }

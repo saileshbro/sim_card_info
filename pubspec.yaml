@@ -1,6 +1,6 @@
 name: sim_card_info
 description: "Flutter Plugin to Get Sim Card Info"
-version: 0.0.2
+version: 1.0.0
 homepage: https://github.com/FadyFouad/sim_card_info
 
 environment:
@@ -13,7 +13,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  permission_handler: ^11.1.0
+  permission_handler: ^11.0.1
 
 dev_dependencies:
   flutter_test:
@@ -27,6 +27,7 @@ flutter:
         pluginClass: SimCardInfoPlugin
       ios:
         pluginClass: SimCardInfoPlugin
+        fileName: sim_card_info_ios.dart
       linux:
         pluginClass: SimCardInfoPlugin
       macos:

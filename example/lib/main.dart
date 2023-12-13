@@ -17,8 +17,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<SimInfo>? _simInfo = [];
+  List<SimInfo>? _simInfo;
   final _simCardInfoPlugin = SimCardInfo();
+  bool isSupported = true;
 
   @override
   void initState() {
@@ -35,13 +36,15 @@ class _MyAppState extends State<MyApp> {
       simCardInfo = await _simCardInfoPlugin.getSimInfo() ?? [];
     } on PlatformException {
       simCardInfo = [];
+      setState(() {
+        isSupported = false;
+      });
     }
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
-
     setState(() {
       _simInfo = simCardInfo;
     });
@@ -54,30 +57,31 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Sim Info'),
         ),
-        body: ListView.builder(
-          itemCount: _simInfo?.length ?? 0,
-          itemBuilder: (context, index) {
-            final simInfo = _simInfo![index];
-            return Card(
-              child: ListTile(
-                leading: Icon(Icons.sim_card),
-                title: Text('SIM ${index + 1}'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Carrier Name: ${simInfo.carrierName}'),
-                    Text('Display Name: ${simInfo.displayName}'),
-                    Text('Slot Index: ${simInfo.slotIndex}'),
-                    Text('Number: ${simInfo.number}'),
-                    Text('Country ISO: ${simInfo.countryIso}'),
-                    Text('Country Phone Prefix: ${simInfo.countryPhonePrefix}'),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+        body: _buildBody(),
       ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (!isSupported) {
+      return const Center(
+        child: Text('Sim Info not supported'),
+      );
+    }
+    if (_simInfo == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return ListView.builder(
+      itemCount: _simInfo?.length ?? 0,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(_simInfo?[index].carrierName ?? ''),
+          subtitle: Text(_simInfo?[index].countryIso ?? ''),
+          trailing: Text(_simInfo?[index].displayName ?? ''),
+        );
+      },
     );
   }
 }
