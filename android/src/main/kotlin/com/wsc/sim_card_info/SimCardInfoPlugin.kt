@@ -70,15 +70,15 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
             subscriptionManager?.activeSubscriptionInfoList?.let { subscriptionInfoList ->
-                simCardInfo.append("[")
+               
                 for (info in subscriptionInfoList) {
                     writer.beginObject()
-                    writer.name("carrierName").value(info.carrierName)
-                    writer.name("displayName").value(info.displayName)
-                    writer.name("slotIndex").value(info.simSlotIndex)
-                    writer.name("number").value(info.number)
-                    writer.name("countryIso").value(info.countryIso)
-                    writer.name("countryPhonePrefix").value(info.countryIso)
+                    writer.name("carrierName").value(info.carrierName.toString())
+                    writer.name("displayName").value(info.displayName.toString())
+                    writer.name("slotIndex").value(info.simSlotIndex.toString())
+                    writer.name("number").value(info.number.toString())
+                    writer.name("countryIso").value(info.countryIso.toString())
+                    writer.name("countryPhonePrefix").value(info.countryIso.toString())
                     writer.endObject()
                    
                 }
@@ -87,12 +87,12 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             }
         } else {
              writer.beginObject()
-            writer.name("carrierName").value(telephonyManager.networkOperatorName)
-            writer.name("displayName").value(telephonyManager.simOperatorName)
-            writer.name("slotIndex").value(telephonyManager.simSerialNumber)
-            writer.name("number").value(telephonyManager.line1Number)
-            writer.name("countryIso").value(telephonyManager.simCountryIso)
-            writer.name("countryPhonePrefix").value(telephonyManager.simCountryIso)
+            writer.name("carrierName").value(telephonyManager.networkOperatorName.toString())
+            writer.name("displayName").value(telephonyManager.simOperatorName.toString())
+            writer.name("slotIndex").value(telephonyManager.simSerialNumber.toString())
+            writer.name("number").value(telephonyManager.line1Number.toString())
+            writer.name("countryIso").value(telephonyManager.simCountryIso.toString())
+            writer.name("countryPhonePrefix").value(telephonyManager.simCountryIso.toString())
             writer.endObject()
             writer.endArray()
         }
