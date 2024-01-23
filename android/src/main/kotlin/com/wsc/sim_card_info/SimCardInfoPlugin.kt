@@ -1,6 +1,6 @@
 package com.wsc.sim_card_info
-
-
+import java.io.StringWriter
+import android.util.JsonWriter
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -54,8 +54,9 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
     @SuppressLint("HardwareIds")
     private fun getSimInfo(): String {
-        val simCardInfo = StringBuilder()
-//        simCardInfo.append("Sim Card Info:\n\n")
+        val simCardInfo = StringWriter()
+        val writer = JsonWriter(simCardInfo)
+        writer.beginArray()
         val telephonyManager =
             context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
         if (telephonyManager == null || ActivityCompat.checkSelfPermission(
@@ -69,44 +70,33 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
             subscriptionManager?.activeSubscriptionInfoList?.let { subscriptionInfoList ->
-                simCardInfo.append("[")
+               
                 for (info in subscriptionInfoList) {
-                    simCardInfo.append(
-                        "{" +
-                                "\"carrierName\": \"${info.carrierName}\"," +
-                                "\"displayName\": \"${info.displayName}\"," +
-                                "\"slotIndex\": \"${info.simSlotIndex}\"," +
-                                "\"number\": \"${info.number}\"," +
-                                "\"countryIso\": \"${info.countryIso}\"," +
-                                "\"countryPhonePrefix\": \"${info.countryIso}\"" +
-                                "},"
-                    )
+                    writer.beginObject()
+                    writer.name("carrierName").value(info.carrierName.toString())
+                    writer.name("displayName").value(info.displayName.toString())
+                    writer.name("slotIndex").value(info.simSlotIndex.toString())
+                    writer.name("number").value(info.number.toString())
+                    writer.name("countryIso").value(info.countryIso.toString())
+                    writer.name("countryPhonePrefix").value(info.countryIso.toString())
+                    writer.endObject()
+                   
                 }
-                // Remove the trailing comma and close the JSON array
-                if (simCardInfo.last() == ',') {
-                    simCardInfo.deleteCharAt(simCardInfo.length - 1)
-                }
-                simCardInfo.append("]")
+                writer.endArray()
+                
             }
         } else {
-            simCardInfo.append("[")
-            simCardInfo.append(
-                "{" +
-                        "\"carrierName\": \"${telephonyManager.networkOperatorName}\"," +
-                        "\"displayName\": \"${telephonyManager.simOperatorName}\"," +
-                        "\"slotIndex\": \"${telephonyManager.simSerialNumber}\"," +
-                        "\"number\": \"${telephonyManager.line1Number}\"," +
-                        "\"countryIso\": \"${telephonyManager.simCountryIso}\"," +
-                        "\"countryPhonePrefix\": \"${telephonyManager.simCountryIso}\"," +
-                        "},"
-            )
-            // Remove the trailing comma and close the JSON array
-            if (simCardInfo.last() == ',') {
-                simCardInfo.deleteCharAt(simCardInfo.length - 1)
-            }
-            simCardInfo.append("]")
+             writer.beginObject()
+            writer.name("carrierName").value(telephonyManager.networkOperatorName.toString())
+            writer.name("displayName").value(telephonyManager.simOperatorName.toString())
+            writer.name("slotIndex").value(telephonyManager.simSerialNumber.toString())
+            writer.name("number").value(telephonyManager.line1Number.toString())
+            writer.name("countryIso").value(telephonyManager.simCountryIso.toString())
+            writer.name("countryPhonePrefix").value(telephonyManager.simCountryIso.toString())
+            writer.endObject()
+            writer.endArray()
         }
-        println("simCardInfo: $simCardInfo")
+        println("simCardInfo mowne: $simCardInfo")
         return simCardInfo.toString()
     }
 
