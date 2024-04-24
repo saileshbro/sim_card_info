@@ -18,6 +18,7 @@ class MethodChannelSimCardInfo extends SimCardInfoPlatform {
     List<SimInfo>? simInfoList;
     if (info != null) {
       simInfoList = [];
+
       /// convert json to list
       final infoJson = json.decode(info);
       infoJson.forEach((element) {
