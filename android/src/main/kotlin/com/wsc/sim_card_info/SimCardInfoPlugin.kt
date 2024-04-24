@@ -1,5 +1,4 @@
 package com.wsc.sim_card_info
-
 import java.io.StringWriter
 import android.util.JsonWriter
 import android.Manifest
@@ -77,10 +76,9 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     writer.name("carrierName").value(info.carrierName.toString())
                     writer.name("displayName").value(info.displayName.toString())
                     writer.name("slotIndex").value(info.simSlotIndex.toString())
-                    if (info.number != null || info.number.toString() != "") {
-                        writer.name("number").value(info.number.toString())
-                    } else {
-                        writer.name("number").value(" not available")
+                    // Remove the trailing comma and close the JSON array
+                    if (simCardInfo.last() == ',') {
+                        simCardInfo.deleteCharAt(simCardInfo.length - 1)
                     }
                     writer.name("countryIso").value(info.countryIso.toString())
                     writer.name("countryPhonePrefix").value(info.countryIso.toString())
@@ -91,7 +89,7 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
             }
         } else {
-            writer.beginObject()
+             writer.beginObject()
             writer.name("carrierName").value(telephonyManager.networkOperatorName.toString())
             writer.name("displayName").value(telephonyManager.simOperatorName.toString())
             writer.name("slotIndex").value(telephonyManager.simSerialNumber.toString())
@@ -148,3 +146,12 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
 }
+
+data class SimInfo(
+    val carrierName: String = "",
+    val displayName: String = "",
+    val slotIndex: Int = 0,
+    val number: String = "",
+    val countryIso: String = "",
+    val countryPhonePrefix: String = ""
+) {}
