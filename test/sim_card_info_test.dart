@@ -8,7 +8,6 @@ import 'package:sim_card_info/sim_info.dart';
 class MockSimCardInfoPlatform
     with MockPlatformInterfaceMixin
     implements SimCardInfoPlatform {
-
   @override
   Future<List<SimInfo>?> getSimInfo() => Future.value([]);
 }

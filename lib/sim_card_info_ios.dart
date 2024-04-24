@@ -20,6 +20,7 @@ class SimCardInfoIos extends SimCardInfoPlatform {
   /// get Sim Info Not Supported on iOS
   @override
   Future<List<SimInfo>?> getSimInfo() async {
-    throw PlatformException(code: '404', message: 'getSimInfo() has not been implemented.');
+    throw PlatformException(
+        code: '404', message: 'getSimInfo() has not been implemented.');
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sim_card_info/sim_card_info.dart';
 import 'package:sim_card_info/sim_info.dart';
 
@@ -24,11 +25,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+
     initSimInfoState();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initSimInfoState() async {
+    await Permission.phone.request();
     List<SimInfo>? simCardInfo;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
@@ -83,6 +86,12 @@ class _MyAppState extends State<MyApp> {
         final simInfo = _simInfo![index];
         return Card(
           child: ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SecondPage()),
+              );
+            },
             leading: const Icon(Icons.sim_card),
             title: Text('SIM ${index + 1}'),
             subtitle: Column(
@@ -99,6 +108,24 @@ class _MyAppState extends State<MyApp> {
           ),
         );
       },
+    );
+  }
+}
+
+class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
     );
   }
 }
