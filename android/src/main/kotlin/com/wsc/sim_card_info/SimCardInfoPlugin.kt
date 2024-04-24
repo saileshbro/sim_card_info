@@ -76,9 +76,11 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     writer.name("carrierName").value(info.carrierName.toString())
                     writer.name("displayName").value(info.displayName.toString())
                     writer.name("slotIndex").value(info.simSlotIndex.toString())
-                    // Remove the trailing comma and close the JSON array
-                    if (simCardInfo.last() == ',') {
-                        simCardInfo.deleteCharAt(simCardInfo.length - 1)
+
+                    if (info.number != null || info.number != "") {
+                        writer.name("number").value(info.number.toString())
+                    } else {
+                        writer.name("number").value("")
                     }
                     writer.name("countryIso").value(info.countryIso.toString())
                     writer.name("countryPhonePrefix").value(info.countryIso.toString())
@@ -93,7 +95,12 @@ class SimCardInfoPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             writer.name("carrierName").value(telephonyManager.networkOperatorName.toString())
             writer.name("displayName").value(telephonyManager.simOperatorName.toString())
             writer.name("slotIndex").value(telephonyManager.simSerialNumber.toString())
-            writer.name("number").value(telephonyManager.line1Number.toString())
+
+            if (telephonyManager.line1Number != null || telephonyManager.line1Number.toString() != "") {
+                writer.name("number").value(telephonyManager.line1Number.toString())
+            } else {
+                writer.name("number").value("")
+            }
             writer.name("countryIso").value(telephonyManager.simCountryIso.toString())
             writer.name("countryPhonePrefix").value(telephonyManager.simCountryIso.toString())
             writer.endObject()
